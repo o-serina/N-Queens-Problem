@@ -242,9 +242,76 @@ def show_restart_summary(data):
     print(f"Average moves with sideways moves: {data['side_avg_moves']:.2f}")
     print()
 
+def save_report(filename, n, basic, sideways, rr, basic_examples, sideways_examples):
+    with open(filename, "w", encoding="utf-8") as out:
+        out.write("N-Queens Hill Climbing Results\n")
+        out.write(f"Board size: {n}\n\n")
+
+        out.write("1. Basic Hill Climbing\n")
+        out.write("Runs\tWin%\tLoss%\tAvgWinMoves\tAvgLossMoves\n")
+        for row in basic:
+            out.write(
+                f"{row['runs']}\t"
+                f"{row['win_pct']:.2f}\t"
+                f"{row['loss_pct']:.2f}\t"
+                f"{row['avg_win_moves']:.2f}\t"
+                f"{row['avg_loss_moves']:.2f}\n"
+            )
+        out.write("\n")
+
+        out.write("2. Hill Climbing with Sideways Moves\n")
+        out.write("Runs\tWin%\tLoss%\tAvgWinMoves\tAvgLossMoves\n")
+        for row in sideways:
+            out.write(
+                f"{row['runs']}\t"
+                f"{row['win_pct']:.2f}\t"
+                f"{row['loss_pct']:.2f}\t"
+                f"{row['avg_win_moves']:.2f}\t"
+                f"{row['avg_loss_moves']:.2f}\n"
+            )
+        out.write("\n")
+
+        out.write("3. Random Restart Summary\n")
+        out.write(f"Trials: {rr['samples']}\n")
+        out.write(f"Avg restarts without sideways: {rr['plain_avg_restarts']:.2f}\n")
+        out.write(f"Avg moves without sideways: {rr['plain_avg_moves']:.2f}\n")
+        out.write(f"Avg restarts with sideways: {rr['side_avg_restarts']:.2f}\n")
+        out.write(f"Avg moves with sideways: {rr['side_avg_moves']:.2f}\n\n")
+
+        out.write("4. Example Sequences: Basic Hill Climbing\n")
+        for i, ex in enumerate(basic_examples, start=1):
+            out.write(f"Example {i}\n")
+            out.write(f"Start board: {ex['start']}\n")
+            out.write(f"Outcome: {'Solved' if ex['solved'] else 'Stuck'}\n")
+            out.write(f"Moves used: {ex['moves']}\n")
+            for step_num, (state, score) in enumerate(ex["history"]):
+                out.write(f"Move {step_num}: board={state}, h={score}\n")
+            out.write("\n")
+
+        out.write("5. Example Sequences: Sideways Moves\n")
+        for i, ex in enumerate(sideways_examples, start=1):
+            out.write(f"Example {i}\n")
+            out.write(f"Start board: {ex['start']}\n")
+            out.write(f"Outcome: {'Solved' if ex['solved'] else 'Stuck'}\n")
+            out.write(f"Moves used: {ex['moves']}\n")
+            for step_num, (state, score) in enumerate(ex["history"]):
+                out.write(f"Move {step_num}: board={state}, h={score}\n")
+            out.write("\n")
+
+
+def parse_run_list(text):
+    pieces = [part.strip() for part in text.split(",") if part.strip()]
+    values = [int(part) for part in pieces]
+
+    if not values or any(v <= 0 for v in values):
+        raise ValueError
+
+    return values
+
 
 def main():
-    print("N-Queens Hill Climbing\n")
+    print("N-Queens Hill Climbing")
+    print()
 
     try:
         n = int(input("Enter n: ").strip())
@@ -252,27 +319,90 @@ def main():
             print("Use n >= 4.")
             return
     except ValueError:
-        print("Invalid input.")
+        print("That was not a valid integer.")
         return
 
-    print("\nRunning tests...")
+    raw_runs = input(f"Run counts separated by commas (Enter for {RUN_SETS}): ").strip()
+    if raw_runs:
+        try:
+            run_sets = parse_run_list(raw_runs)
+        except ValueError:
+            print("Could not read the run counts.")
+            return
+    else:
+        run_sets = RUN_SETS
 
-    basic_rows = [batch_trials(n, runs, sideways_ok=False) for runs in RUN_SETS]
-    sideways_rows = [batch_trials(n, runs, sideways_ok=True) for runs in RUN_SETS]
-    rr_data = restart_experiment(n)
+    raw_sideways = input(f"Sideways move cap (Enter for {SIDEWAYS_CAP}): ").strip()
+    if raw_sideways:
+        try:
+            sideways_cap = int(raw_sideways)
+            if sideways_cap < 0:
+                print("Sideways cap cannot be negative.")
+                return
+        except ValueError:
+            print("Invalid sideways cap.")
+            return
+    else:
+        sideways_cap = SIDEWAYS_CAP
+
+    raw_rr = input(f"Random-restart trial count (Enter for {RR_SAMPLES}): ").strip()
+    if raw_rr:
+        try:
+            rr_samples = int(raw_rr)
+            if rr_samples <= 0:
+                print("Trial count must be positive.")
+                return
+        except ValueError:
+            print("Invalid trial count.")
+            return
+    else:
+        rr_samples = RR_SAMPLES
+
+    print()
+    print("Running basic hill-climbing tests...")
+    basic_rows = []
+    for runs in run_sets:
+        basic_rows.append(batch_trials(n, runs, sideways_ok=False, sideways_cap=sideways_cap))
+
+    print("Running sideways-move tests...")
+    sideways_rows = []
+    for runs in run_sets:
+        sideways_rows.append(batch_trials(n, runs, sideways_ok=True, sideways_cap=sideways_cap))
+
+    print("Running random-restart tests...")
+    rr_data = restart_experiment(n, samples=rr_samples, sideways_cap=sideways_cap)
 
     print()
     show_summary("Basic Hill Climbing", basic_rows)
     show_summary("Hill Climbing with Sideways Moves", sideways_rows)
     show_restart_summary(rr_data)
 
-    print("Example runs (basic):")
+    print("Example paths from basic hill climbing")
+
     for ex in basic_rows[0]["examples"]:
         show_example(ex)
 
-    print("Example runs (sideways):")
+    print("Example paths from sideways-move hill climbing")
+
     for ex in sideways_rows[0]["examples"]:
         show_example(ex)
+
+    save_choice = input("Save results to a text file? (y/n): ").strip().lower()
+    if save_choice == "y":
+        filename = input("Filename: ").strip()
+        if not filename:
+            filename = "nqueens_results.txt"
+
+        save_report(
+            filename,
+            n,
+            basic_rows,
+            sideways_rows,
+            rr_data,
+            basic_rows[0]["examples"],
+            sideways_rows[0]["examples"]
+        )
+        print(f"Saved to {filename}")
 
 
 if __name__ == "__main__":
