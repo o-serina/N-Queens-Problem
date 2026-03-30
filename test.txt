@@ -1,0 +1,155 @@
+N-Queens Hill Climbing Results
+Board size: 8
+
+1. Basic Hill Climbing
+Runs	Win%	Loss%	AvgWinMoves	AvgLossMoves
+50	8.00	92.00	3.50	3.20
+100	11.00	89.00	3.82	3.08
+200	14.00	86.00	4.04	2.99
+500	12.60	87.40	4.00	3.08
+1000	13.20	86.80	4.07	3.06
+1500	14.73	85.27	4.06	3.05
+
+2. Hill Climbing with Sideways Moves
+Runs	Win%	Loss%	AvgWinMoves	AvgLossMoves
+50	100.00	0.00	18.88	0.00
+100	91.00	9.00	20.70	39.33
+200	95.50	4.50	22.01	59.89
+500	92.20	7.80	17.87	83.92
+1000	93.30	6.70	18.94	65.72
+1500	93.93	6.07	20.03	65.27
+
+3. Random Restart Summary
+Trials: 200
+Avg restarts without sideways: 5.62
+Avg moves without sideways: 21.27
+Avg restarts with sideways: 0.06
+Avg moves with sideways: 21.32
+
+4. Example Sequences: Basic Hill Climbing
+Example 1
+Start board: [3, 5, 7, 6, 0, 6, 5, 3]
+Outcome: Stuck
+Moves used: 4
+Move 0: board=[3, 5, 7, 6, 0, 6, 5, 3], h=7
+Move 1: board=[3, 5, 7, 6, 0, 2, 5, 3], h=5
+Move 2: board=[1, 5, 7, 6, 0, 2, 5, 3], h=3
+Move 3: board=[1, 5, 7, 6, 4, 2, 5, 3], h=2
+Move 4: board=[1, 5, 0, 6, 4, 2, 5, 3], h=1
+
+Example 2
+Start board: [5, 0, 2, 0, 1, 7, 4, 2]
+Outcome: Stuck
+Moves used: 3
+Move 0: board=[5, 0, 2, 0, 1, 7, 4, 2], h=4
+Move 1: board=[6, 0, 2, 0, 1, 7, 4, 2], h=3
+Move 2: board=[6, 0, 5, 0, 1, 7, 4, 2], h=2
+Move 3: board=[6, 0, 5, 3, 1, 7, 4, 2], h=1
+
+Example 3
+Start board: [2, 3, 5, 7, 4, 7, 2, 0]
+Outcome: Stuck
+Moves used: 2
+Move 0: board=[2, 3, 5, 7, 4, 7, 2, 0], h=7
+Move 1: board=[2, 3, 5, 7, 4, 6, 2, 0], h=4
+Move 2: board=[1, 3, 5, 7, 4, 6, 2, 0], h=3
+
+Example 4
+Start board: [6, 7, 4, 0, 4, 7, 0, 7]
+Outcome: Stuck
+Moves used: 5
+Move 0: board=[6, 7, 4, 0, 4, 7, 0, 7], h=12
+Move 1: board=[6, 7, 5, 0, 4, 7, 0, 7], h=8
+Move 2: board=[6, 7, 5, 0, 4, 7, 0, 2], h=5
+Move 3: board=[6, 3, 5, 0, 4, 7, 0, 2], h=3
+Move 4: board=[6, 3, 5, 0, 4, 7, 7, 2], h=2
+Move 5: board=[6, 3, 5, 0, 4, 1, 7, 2], h=1
+
+5. Example Sequences: Sideways Moves
+Example 1
+Start board: [3, 1, 1, 7, 6, 3, 4, 3]
+Outcome: Solved
+Moves used: 8
+Move 0: board=[3, 1, 1, 7, 6, 3, 4, 3], h=12
+Move 1: board=[3, 1, 1, 7, 6, 3, 4, 0], h=7
+Move 2: board=[5, 1, 1, 7, 6, 3, 4, 0], h=5
+Move 3: board=[5, 1, 1, 7, 6, 3, 7, 0], h=3
+Move 4: board=[5, 1, 1, 6, 6, 3, 7, 0], h=2
+Move 5: board=[5, 5, 1, 6, 6, 3, 7, 0], h=2
+Move 6: board=[5, 5, 1, 6, 6, 3, 7, 4], h=2
+Move 7: board=[5, 5, 1, 6, 0, 3, 7, 4], h=1
+Move 8: board=[2, 5, 1, 6, 0, 3, 7, 4], h=0
+
+Example 2
+Start board: [5, 2, 0, 1, 2, 3, 3, 4]
+Outcome: Solved
+Moves used: 24
+Move 0: board=[5, 2, 0, 1, 2, 3, 3, 4], h=9
+Move 1: board=[5, 2, 0, 1, 2, 7, 3, 4], h=5
+Move 2: board=[5, 2, 6, 1, 2, 7, 3, 4], h=3
+Move 3: board=[5, 0, 6, 1, 2, 7, 3, 4], h=2
+Move 4: board=[5, 0, 6, 4, 2, 7, 3, 4], h=2
+Move 5: board=[5, 0, 6, 4, 2, 7, 3, 3], h=1
+Move 6: board=[5, 0, 6, 4, 2, 7, 3, 1], h=1
+Move 7: board=[5, 0, 6, 4, 2, 7, 3, 7], h=1
+Move 8: board=[5, 0, 6, 4, 2, 7, 3, 3], h=1
+Move 9: board=[5, 0, 6, 4, 2, 7, 3, 7], h=1
+Move 10: board=[5, 0, 6, 4, 2, 7, 3, 3], h=1
+Move 11: board=[5, 0, 6, 4, 2, 7, 3, 1], h=1
+Move 12: board=[5, 0, 6, 4, 2, 7, 3, 3], h=1
+Move 13: board=[5, 0, 6, 4, 2, 7, 3, 1], h=1
+Move 14: board=[5, 0, 2, 4, 2, 7, 3, 1], h=1
+Move 15: board=[5, 0, 6, 4, 2, 7, 3, 1], h=1
+Move 16: board=[5, 0, 6, 4, 2, 7, 3, 3], h=1
+Move 17: board=[5, 1, 6, 4, 2, 7, 3, 3], h=1
+Move 18: board=[5, 1, 6, 4, 2, 7, 5, 3], h=1
+Move 19: board=[5, 1, 6, 4, 2, 7, 0, 3], h=1
+Move 20: board=[5, 1, 6, 4, 2, 7, 5, 3], h=1
+Move 21: board=[5, 1, 6, 0, 2, 7, 5, 3], h=1
+Move 22: board=[4, 1, 6, 0, 2, 7, 5, 3], h=1
+Move 23: board=[1, 1, 6, 0, 2, 7, 5, 3], h=1
+Move 24: board=[1, 4, 6, 0, 2, 7, 5, 3], h=0
+
+Example 3
+Start board: [6, 3, 3, 4, 0, 3, 1, 5]
+Outcome: Solved
+Moves used: 22
+Move 0: board=[6, 3, 3, 4, 0, 3, 1, 5], h=7
+Move 1: board=[6, 3, 7, 4, 0, 3, 1, 5], h=4
+Move 2: board=[6, 0, 7, 4, 0, 3, 1, 5], h=3
+Move 3: board=[6, 4, 7, 4, 0, 3, 1, 5], h=3
+Move 4: board=[6, 4, 7, 7, 0, 3, 1, 5], h=2
+Move 5: board=[6, 4, 7, 7, 0, 3, 1, 4], h=2
+Move 6: board=[6, 2, 7, 7, 0, 3, 1, 4], h=1
+Move 7: board=[6, 2, 7, 5, 0, 3, 1, 4], h=1
+Move 8: board=[6, 2, 7, 7, 0, 3, 1, 4], h=1
+Move 9: board=[6, 2, 5, 7, 0, 3, 1, 4], h=1
+Move 10: board=[6, 2, 7, 7, 0, 3, 1, 4], h=1
+Move 11: board=[6, 2, 7, 5, 0, 3, 1, 4], h=1
+Move 12: board=[6, 2, 7, 5, 0, 5, 1, 4], h=1
+Move 13: board=[6, 2, 7, 5, 0, 3, 1, 4], h=1
+Move 14: board=[6, 2, 7, 5, 0, 5, 1, 4], h=1
+Move 15: board=[6, 2, 7, 2, 0, 5, 1, 4], h=1
+Move 16: board=[6, 3, 7, 2, 0, 5, 1, 4], h=1
+Move 17: board=[6, 2, 7, 2, 0, 5, 1, 4], h=1
+Move 18: board=[6, 2, 7, 2, 0, 3, 1, 4], h=1
+Move 19: board=[6, 5, 7, 2, 0, 3, 1, 4], h=1
+Move 20: board=[3, 5, 7, 2, 0, 3, 1, 4], h=1
+Move 21: board=[3, 5, 7, 2, 6, 3, 1, 4], h=1
+Move 22: board=[0, 5, 7, 2, 6, 3, 1, 4], h=0
+
+Example 4
+Start board: [4, 6, 6, 5, 7, 7, 0, 0]
+Outcome: Solved
+Moves used: 9
+Move 0: board=[4, 6, 6, 5, 7, 7, 0, 0], h=7
+Move 1: board=[4, 6, 3, 5, 7, 7, 0, 0], h=4
+Move 2: board=[4, 6, 3, 5, 7, 7, 0, 2], h=2
+Move 3: board=[4, 6, 3, 5, 7, 1, 0, 2], h=1
+Move 4: board=[4, 6, 3, 5, 7, 5, 0, 2], h=1
+Move 5: board=[4, 6, 3, 5, 7, 1, 0, 2], h=1
+Move 6: board=[4, 6, 3, 5, 7, 5, 0, 2], h=1
+Move 7: board=[4, 6, 3, 5, 7, 1, 0, 2], h=1
+Move 8: board=[4, 6, 3, 5, 7, 1, 6, 2], h=1
+Move 9: board=[4, 0, 3, 5, 7, 1, 6, 2], h=0
+
